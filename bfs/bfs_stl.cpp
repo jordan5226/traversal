@@ -24,6 +24,7 @@ int main()
 {
 	int num_nodes=0; // 節點數量 
 	int value=0, i=0;
+	char ch;
 	
 	// TODO: read file && create adjacency list
 	FILE *fptr;
@@ -39,11 +40,11 @@ int main()
 	
 	while(!feof(fptr))
 	{
-		while(((value = fgetc(fptr)) != '\n') && (value != EOF))
+		while(fscanf(fptr, "%d%c", &value, &ch))
 		{
-			if(value == ' ')
-				continue;
-			list[i].push_back(value-48);
+			list[i].push_back(value);
+			if(ch=='\n' || feof(fptr))
+				break;
 		}
 		++i;
 	}

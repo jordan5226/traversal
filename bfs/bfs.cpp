@@ -17,17 +17,20 @@
 #include <windows.h>
 using namespace std;
 
+
+template <typename T>
 struct Node {
 	int value;
-	Node *next;
+	Node<T> *next;
 };
 
-void insertNode(Node **ptr, int value)
+template <typename T>
+void insertNode(Node<T> **ptr, T value)
 {
-	Node *newNode;
+	Node<T> *newNode;
 	if(*ptr == NULL)
 	{
-		newNode = (Node*)malloc(sizeof(Node));
+		newNode = (Node<T>*)malloc(sizeof(Node<T>));
 		*ptr = newNode;
 	}
 	else
@@ -37,14 +40,15 @@ void insertNode(Node **ptr, int value)
 		{
 			newNode = newNode->next;
 		}
-		newNode->next = (Node*)malloc(sizeof(Node)); // 在尾端插入新的Node 
+		newNode->next = (Node<T>*)malloc(sizeof(Node<T>)); // 在尾端插入新的Node 
 		newNode = newNode->next;
 	}
 	newNode->value = value;
 	newNode->next = NULL;
 }
 
-void printList(Node *ptr)
+template <typename T>
+void printList(Node<T> *ptr)
 {
 	while(ptr != NULL)
 	{
@@ -121,6 +125,7 @@ int main()
 {
 	int num_nodes=0; // 節點數量 
 	int value=0, i=0;
+	char ch;
 	
 	// TODO: read file && create adjacency list
 	FILE *fptr;
@@ -132,16 +137,16 @@ int main()
 	}
 	fscanf(fptr, "%d\n", &num_nodes);
 	
-	Node* list[num_nodes];
+	Node<int>* list[num_nodes];
 	
 	while(!feof(fptr))
 	{
-		list[i]=NULL;
-		while(((value = fgetc(fptr)) != '\n') && (value != EOF))
+		list[i] = NULL;
+		while(fscanf(fptr, "%d%c", &value, &ch))
 		{
-			if(value == ' ')
-				continue;
-			insertNode(&list[i], value-48);
+			insertNode(&list[i], value);
+			if(ch=='\n' || feof(fptr))
+				break;
 		}
 		++i;
 	}
@@ -164,7 +169,7 @@ int main()
 			cout<<element<<" "; 				// 輸出元素 
 			node[element-1] = true; 			// 標記為已走訪 
 			// 將該元素相鄰節點加入佇列
-			Node *ptr = list[element-1];
+			Node<int> *ptr = list[element-1];
 			ptr = ptr->next;
 			while(ptr != NULL)
 			{

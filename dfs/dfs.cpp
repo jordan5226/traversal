@@ -17,17 +17,20 @@
 #include <windows.h>
 using namespace std;
 
+
+template <typename T>
 struct Node {
-	int value;
-	Node *next;
+	T value;
+	Node<T> *next;
 };
 
-void insertNode(Node **ptr, int value)
+template <typename T>
+void insertNode(Node<T> **ptr, T value)
 {
-	Node *newNode;
+	Node<T> *newNode;
 	if(*ptr == NULL)
 	{
-		newNode = (Node*)malloc(sizeof(Node));
+		newNode = (Node<T>*)malloc(sizeof(Node<T>));
 		*ptr = newNode;
 	}
 	else
@@ -37,14 +40,15 @@ void insertNode(Node **ptr, int value)
 		{
 			newNode = newNode->next;
 		}
-		newNode->next = (Node*)malloc(sizeof(Node)); // 在尾端插入新的Node 
+		newNode->next = (Node<T>*)malloc(sizeof(Node<T>)); // 在尾端插入新的Node 
 		newNode = newNode->next;
 	}
 	newNode->value = value;
 	newNode->next = NULL;
 }
 
-void printList(Node *ptr)
+template <typename T>
+void printList(Node<T> *ptr)
 {
 	while(ptr != NULL)
 	{
@@ -63,6 +67,7 @@ public:
 		this->top = -1;
 		stack = (T*)malloc(capacity * sizeof(T));
 	}
+	
 	~Stack()
 	{
 		free(stack);
@@ -77,7 +82,7 @@ public:
 	
 	bool isEmpty()
 	{
-		if(top <0)
+		if(top < 0)
 			return true;
 		return false;
 	}
@@ -114,6 +119,7 @@ int main()
 {
 	int num_nodes=0; // 節點數量 
 	int value=0, i=0;
+	char ch;
 	
 	// TODO: read file && create adjacency list
 	FILE *fptr;
@@ -125,23 +131,23 @@ int main()
 	}
 	fscanf(fptr, "%d\n", &num_nodes);
 	
-	Node* list[num_nodes];
+	Node<int>* list[num_nodes];
 	
 	while(!feof(fptr))
 	{
-		list[i]=NULL;
-		while(((value = fgetc(fptr)) != '\n') && (value != EOF))
+		list[i] = NULL;
+		while(fscanf(fptr, "%d%c", &value, &ch))
 		{
-			if(value == ' ')
-				continue;
-			insertNode(&list[i], value-48);
+			insertNode(&list[i], value);
+			if(ch=='\n' || feof(fptr))
+				break;
 		}
 		++i;
 	}
 	fclose(fptr);
 	
-	Stack<int> *tmpStk = new Stack<int>(num_nodes-1); // 暫存堆棧 
-	Stack<int> *dfsStk = new Stack<int>((num_nodes*(num_nodes-1))/2); // DFS堆棧 
+	Stack<int> *tmpStk = new Stack<int>(num_nodes+1); // 暫存堆棧 
+	Stack<int> *dfsStk = new Stack<int>(num_nodes*(num_nodes-1)+1); // DFS堆棧 
 	
 	// TODO: do DFS
 	int element=0;
@@ -152,15 +158,18 @@ int main()
 	cout<<"Output: ";
 	while(1)
 	{
-		element = dfsStk->pop(); 			// (2)從堆棧彈出頂端元素 
+		if(!dfsStk->isEmpty())
+			element = dfsStk->pop();		// (2)從堆棧彈出頂端元素 
+		else
+			break;							// (3)若DFS堆棧為空則結束 
 		if(!node[element-1]) 				// I.若頂端元素未走訪 
 		{
 			cout<<element<<" "; 			// 輸出元素 
 			node[element-1] = true; 		// 標記為已走訪 
 			// 將該元素相鄰節點加入堆棧 
-			Node *ptr = list[element-1];
+			Node<int> *ptr = list[element-1];
 			ptr = ptr->next;
-			while(ptr!=NULL) // 先依相鄰串列順序依序推入暫存堆棧 
+			while(ptr != NULL) // 先依相鄰串列順序依序推入暫存堆棧 
 			{
 				if(!tmpStk->push(ptr->value))
 					exit(1); // 堆棧已滿
@@ -171,11 +180,6 @@ int main()
 				if(!dfsStk->push(tmpStk->pop()))
 					exit(1); // 堆棧已滿 
 			}
-		}
-		else								// II.若頂端元素已走訪 
-		{
-			if(dfsStk->isEmpty())			// (3)若DFS堆棧為空則結束 
-				break;
 		}
 		//dfsStk->print();
 	}

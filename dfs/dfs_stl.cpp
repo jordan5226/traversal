@@ -24,6 +24,7 @@ int main()
 {
 	int num_nodes=0; // 節點數量 
 	int value=0, i=0;
+	char ch;
 	
 	// TODO: read file && create adjacency list
 	FILE *fptr;
@@ -39,11 +40,11 @@ int main()
 	
 	while(!feof(fptr))
 	{
-		while(((value = fgetc(fptr)) != '\n') && (value != EOF))
+		while(fscanf(fptr, "%d%c", &value, &ch))
 		{
-			if(value == ' ')
-				continue;
-			list[i].push_back(value-48);
+			list[i].push_back(value);
+			if(ch=='\n' || feof(fptr))
+				break;
 		}
 		++i;
 	}
@@ -60,8 +61,13 @@ int main()
 	cout<<"Output: ";
 	while(1)
 	{
-		element = dfsStk.top();				// (2)從堆棧彈出頂端元素
-		dfsStk.pop();
+		if(!dfsStk.empty())
+		{
+			element = dfsStk.top();			// (2)從堆棧彈出頂端元素
+			dfsStk.pop();
+		}
+		else
+			break;							// (3)若DFS堆棧為空則結束 
 		if(!node[element-1]) 				// I.若頂端元素未走訪 
 		{
 			cout<<element<<" "; 			// 輸出元素 
@@ -79,11 +85,6 @@ int main()
 				dfsStk.push(tmpStk.top());
 				tmpStk.pop();
 			}
-		}
-		else								// II.若頂端元素已走訪 
-		{
-			if(dfsStk.empty())				// (3)若DFS堆棧為空則結束 
-				break;
 		}
 	}
 	cout<<endl;
