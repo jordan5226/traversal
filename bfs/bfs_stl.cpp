@@ -56,16 +56,16 @@ int main()
 	bool node[num_nodes]; // 已走訪節點記錄 
 	memset(node, 0, num_nodes);
 	
-	bfsQueue.push(1); 							// (1)將起點放入佇列 
+	bfsQueue.push(1);							// (1)將起點放入佇列 
 	cout<<"Output: ";
 	while(true)
 	{
-		element = bfsQueue.front(); 			// (2)從佇列取出一元素
+		element = bfsQueue.front();				// (2)從佇列取出一元素
 		bfsQueue.pop();
 		if(!node[element-1]) // 若元素未走訪
 		{
-			cout<<element<<" "; 				// 輸出元素 
-			node[element-1] = true; 			// 標記為已走訪 
+			cout<<element<<" ";					// 輸出元素 
+			node[element-1] = true;				// 標記為已走訪 
 			// 將該元素相鄰節點加入佇列
 			vector<int>::iterator it = list[element-1].begin();
 			++it;

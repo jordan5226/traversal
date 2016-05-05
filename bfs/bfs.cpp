@@ -154,7 +154,7 @@ int main()
 	bool node[num_nodes]; // 已走訪節點記錄 
 	memset(node, 0, num_nodes);
 	
-	bfsQueue->add(1); 							// (1)將起點放入佇列 
+	bfsQueue->add(1);							// (1)將起點放入佇列 
 	cout<<"Output: ";
 	while(true)
 	{

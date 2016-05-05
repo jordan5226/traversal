@@ -148,7 +148,7 @@ int main()
 	bool node[num_nodes]; // 已走訪節點記錄 
 	memset(node, 0, num_nodes);
 	
-	dfsStk->push(1); 						// (1)將起點放入堆棧 
+	dfsStk->push(1);						// (1)將起點放入堆棧 
 	cout<<"Output: ";
 	while(1)
 	{
@@ -172,7 +172,7 @@ int main()
 					exit(1); // 堆棧已滿 
 			}
 		}
-		else 								// II.若頂端元素已走訪 
+		else								// II.若頂端元素已走訪 
 		{
 			if(dfsStk->isEmpty())			// (3)若DFS堆棧為空則結束 
 				break;
